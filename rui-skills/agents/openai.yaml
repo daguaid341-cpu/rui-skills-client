@@ -1,0 +1,13 @@
+interface:
+  display_name: "Rui-Skills"
+  short_description: "分别制作真人剧与漫剧视频分镜，沿用已有角色场景，内部检查空间与镜头连续性"
+  default_prompt: "使用 $rui-skills，按我选择的真人剧或漫剧模式制作30秒视频分镜，沿用我指定的人物和场景资产，交付前检查空间与镜头连续性。"
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

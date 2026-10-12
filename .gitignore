@@ -1,0 +1,13 @@
+.local-verifier/
+.authorization-server/
+.private/
+.env
+.env.*
+node_modules/
+__pycache__/
+*.pyc
+output/
+logs/
+server/
+*.pem
+*.key
