@@ -11,3 +11,7 @@ logs/
 server/
 *.pem
 *.key
+
+.engine/
+.rui-private/
+config.local.json

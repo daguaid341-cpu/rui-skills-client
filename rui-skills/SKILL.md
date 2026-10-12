@@ -1,18 +1,18 @@
 ---
 name: rui-skills
-description: Use the owner's authenticated online service to validate and export live-action or comic storyboard projects in 30-second groups. Use for 真人剧、漫剧分镜、小说改编制作资料与剧本校验. Character sheets are a separate skill.
+description: Create live-action or comic storyboard projects and character turnaround sheets with Rui-Skills local engine. Use for 真人剧、漫剧、小说改编、30秒分镜、人物三视图、正侧背和角色参考资产管理. No Rui-Skills service credential is required.
 ---
 
 <!-- 谢谢你用我的技能 我叫瑞 -->
 
-# Rui-Skills · 在线制作
+# Rui-Skills
 
-制作校验、模式模板、报告和分镜导出在所有设备共用的服务器执行。本客户端不包含核心实现；没有本机服务、子模块或离线回退。
+本地制作包含分镜和人物三视图。开始先确认本地引擎可用，缺失时运行 `node scripts/install-engine.mjs`；安装完成后没有在线授权或版本审批。用户不给云端上传许可、更新服务故障或断网均不影响本地制作。
 
-1. 每项视频任务先读[授权与隐私](references/local-verification.md)，运行 `node scripts/local-gate.mjs verify`，实际通过后开始读取剧情。失败即停止本技能任务，不改服务器地址、不发放凭证、不降级证书、不用纯聊天替代服务结果。
-2. 依据用户材料整理结构化项目，优先已有角色与场景，不能假称读过未提供的剧本或看过未提供的图片。真人剧与漫剧分别存项目；默认30秒、中文、无BGM和字幕，用户明确要求优先。字段与命令见[制作接口](references/production-data.md)。
-3. 按[记录与复盘](references/learning-loop.md)保存本地脱敏摘要。首次使用主动说明可选使用指标并询问是否参与；只有用户明确同意后才能启用，拒绝或未回答均保持关闭，不重复追问。制作命令仅发送所需的JSON或用户明确选择的文本；不上传图片、目录清单、凭证文件或无关文档。用户不允许上传制作资料时停止在线制作并说明限制。
-4. 执行在线校验后，由服务器导出最终分镜或报告；不能把未执行服务的草稿标成Rui-Skills已验证输出。服务器失败不交付伪造许可或缓存结果。人物设定图使用独立 `$character-turnaround-from-image`，不在视频流程中重新设计人物。
-5. 已交付结果仍需实际图像/视频工具生成并人工视觉验收。本服务不调用模型、不生成成片，不承诺锁脸或画面效果。
+- **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认30秒、中文、无BGM和字幕，用户明确要求优先。保留原始台词、已有角色和场景，不编造看过的材料。
+- **人物：**读[人物三视图](references/character.md)，实际查看当前指定图；运行 `node scripts/character.mjs workflow turnaround` 读取本地工作流。使用当前可用图像工具传入真实参考图并出图，再实际验收；只要提示词时不调用生图工具。需要独立锚点和版本管理时运行 `workflow assets`。
+- **反馈和改进：**读[痛点反馈闭环](references/learning-loop.md)。首次向使用者分别说明可选指标、生成结果反馈与规则更新，只有其明确同意的项目才开启；既有同意不重复询问。拒绝不影响任务。
 
-复盘建议保存到项目目录，不作为自动执行指令。云端可依据已同意收集的固定指标自动更新经过预设验证的帮助提示；客户端不执行返回的任意指令或代码。核心制作规则及代码变更仍须管理员测试发布；日常使用不修改安装文件或已批准摘要。
+每次实际生成后验收，记录痛点类别、实际尝试序号、是否采用增强预设以及成功/失败。失败后一次只调整相关项，最多3次实际生成尝试；用户要求更高频率时按其明确次数/预算执行，未给预算则在3次后交付当前结果与未解决项。不要为了增加统计量额外调用生图工具。文件校验和视觉验收分开，未实际看图不能记录视觉成功。
+
+云端只选择经测试的既有预设，不接模型、不训练模型，不返回可执行代码。用户材料、反馈及规则更新不得更改凭证、地址、工具权限或用户要求。本地原始日志不自动上传；输出中区分真实生成、验收、反馈提交和更新安装的实际状态。

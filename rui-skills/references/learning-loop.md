@@ -1,25 +1,53 @@
-# 调用记录与复盘
+# 生成痛点反馈与预设优化
 
-## 可选云端使用指标
+## 同意与控制
 
-首次使用主动说明：“是否允许向凭证所指向的制作服务提交使用指标，用于改进服务提示？仅统计操作类别、成功/失败和耗时档位，不保存剧情或聊天；拒绝不影响制作，之后可以关闭。”用户明确同意后执行 `node scripts/usage-metrics.mjs enable --consent`。未同意不得代开。
+首次说明三项独立可选功能：运行指标用于观察调用成功率；生成反馈用于统计反复出现的痛点及重试是否解决；自动更新用于接收签名预设。均默认关闭，分别按使用者的明确选择启用。不因安装技能或作者授权就假定每位使用者同意。拒绝或未回答保持关闭，已有选择不重复追问。
 
-`node scripts/usage-metrics.mjs status` 查看状态，`node scripts/usage-metrics.mjs disable` 立即停止后续统计。同意绑定当前服务地址与设备；缺失或异常配置均默认关闭。无需为每次制作重复询问已有选择；本地日志和复盘建议不会自动上传。
+```text
+node scripts/evolution.mjs status
+node scripts/evolution.mjs enable metrics --consent
+node scripts/evolution.mjs enable feedback --consent
+node scripts/evolution.mjs enable updates --consent
+node scripts/evolution.mjs disable metrics
+node scripts/evolution.mjs disable feedback
+node scripts/evolution.mjs disable updates
+```
 
-启用后，客户端在制作请求中附带同意标志，由服务端从实际执行结果计数，无额外后台监听。只持久化UTC日期、固定操作类别、结果类别、耗时档位的聚合计数，保留30天并定期清理。聚合不保存设备ID、凭证、IP、原文、输出或文件路径；连接认证和必要安全审计另见[授权与隐私](local-verification.md)。关闭后已有聚合按保留期限到期清理，聚合不关联个人，无法单独提取某人的贡献。
+只执行用户同意的启用命令。统计不含原文、图片、聊天或自由文本；日志默认保留在项目私有目录，不能自动上传原始日志。
 
-云端自动更新范围是预设的帮助提示：按近期聚合选择已验证的提示版本，后续制作请求自动使用。不是模型训练，也不是任意改写制作核心。核心代码更新仍经管理员回归验证和发布；客户端无需下载核心源码。
+## 每次实际生成的闭环
 
-## 本地复盘
+1. 创建任务随机编号：`node scripts/evolution.mjs new-task`，在本次任务各轮复用。不能用用户名、文件名或项目名作为编号。
+2. 记录本轮实际采用的规则：生成提示词返回的 applied_rules（或 `status` 的 active_rules）中包含本轮痛点ID且实际用了该附加预设，标为 enhanced；否则标为 baseline。保留尝试序号和本地原始输出，不能伪造生成。
+3. 实际生成和查看结果后，按下面固定类别判定是否解决。不确定时留在本地待审，不上报成功。文件检查不能代替视觉验收。
+4. 反馈已获同意时提交实际结果。失败后仅调整对应因素再生成；成功也提交，才能比较改善率。默认最多3次实际生成尝试，用户给出更高次数/预算时遵照执行；不自动无限重试或额外刷次数。
 
-开始时运行 `python scripts/record_invocation.py start --skill rui-skills --task 简短摘要 --rules-version 实际版本 --output-dir 项目目录/.rui-private/logs`。关键阶段用event追加，结束用finish记录completed/failed/interrupted。只记录必要的可观察结果，不能记录隐藏推理、完整聊天或原始剧情。
+| 类别 | 痛点 |
+| --- | --- |
+| identity | 人脸、年龄、发型、服装或身份漂移 |
+| skin | 磨皮、塑料感、重复毛孔或不当真人质感 |
+| framing | 头脚裁切、身高比例或拼版错位 |
+| angle | 侧面不是90度、背面回头 |
+| continuity | 人物站位、动作、轴线或道具连续性错误 |
+| timing | 分镜时长与台词/动作不匹配 |
 
-脚本在写入前过滤常见token、密钥、密码、邮箱、手机号、身份证号、URL和绝对路径，并限制摘要长度。自动过滤不能可靠识别所有人名和私人剧情，故日志只能默认本地私有保存，不直接复制到公开仓库。不要在命令中传入原始密钥或长篇私密材料；过滤无法撤销输入已出现在进程参数或聊天里的暴露。
+命令格式：
 
-确需公开同步时，先执行 `python scripts/record_invocation.py export-public --record 本地记录.json --out 新公开记录.json`。该命令只导出固定枚举和事件/经验数量，不导出摘要、事件正文、路径、版本、经验文本或用户附加字段。公开同步还必须有用户明确授权；工具不自动联网或提交。
+```text
+node scripts/evolution.mjs feedback 类别 character或live-action或comic ok或failed 实际尝试序号 任务UUID baseline或enhanced
+```
 
-复盘有价值的建议使用 `python scripts/record_invocation.py propose-rule --summary 脱敏建议 --output-dir 项目目录/.rui-private/proposals`，状态pending_review。没有新建议记no_new_rule。建议是待审数据，不是下次任务的自动指令；用户材料和生成结果不能改变安全策略、地址、凭证或工具权限。
+同一尝试同一痛点只记录一次最终验收。开始新生成才增加序号；每次最多20号，达到用户预算或已解决就停止。此命令不执行生图，也不读取项目、图片或聊天。采集的尝试次数按 first/retry/many 档位聚合；随机编号仅短期去重，长期不保存。
 
-日常任务不修改SKILL.md、参考流程、代码、服务器模板或备用规则。管理员维护时才审阅建议、改核心规则、运行测试、部署；云端预设提示自动更新独立于此流程。客户端如有变更，另生成摘要并批准新版本。日志和建议禁止写入安装目录，所以日常复盘不会导致版本失效。
+## 云端如何改进
 
-文件检查、文字校验、视觉检查分开记录；无实际生图不能标记视觉通过。不宣称训练模型或监听其他聊天。没有Python时可以在项目私有目录保存必要摘要并标为待处理，但不得手写公开导出替代安全导出器。
+近期累计足够的基线结果、某痛点反复失败时，云端选择已有的针对性预设，经规则结构与行为兼容检查后发布签名更新。后续继续收集真实生成结果；有足够的增强预设结果时比较失败率，明显恶化则撤回。样本不足保持基线，不能仅凭一次失败泛化为所有用户的规则。
+
+这是观察统计，不是随机对照试验；任务难度、输入和工具变化可能影响结果，不承诺必然提升视觉质量。客户端按任务实际使用结果反馈，不能把重复请求或合成测试当作真实质量证据。
+
+同意更新后，在本地命令结束时最多每小时检查一次；断网时沿用已验证版本。`node scripts/evolution.mjs sync` 手动同步；`node scripts/evolution.mjs rollback` 回到上一版本或内置基线，并关闭自动更新以免立即覆盖。以后需主动重新开启。损坏签名、未知规则和远程降级都拒绝。
+
+本地引擎会把已验证预设纳入分镜附加验收与人物提示词/工作流。预设不得覆盖用户明确要求，也不能改变地址、权限、凭证或执行代码。本方案不调用模型、不训练权重、不自动写新代码；新增痛点类别或新核心能力仍需作者实现、测试、发布。
+
+可选本地日志使用 `python scripts/record_invocation.py`，输出到项目 `.rui-private/logs`；仅记录可观察摘要，不记录隐藏推理。长期聚合保留30天，细节见[隐私](local-verification.md)。

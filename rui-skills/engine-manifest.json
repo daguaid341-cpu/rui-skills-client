@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "node": "24.15.0",
+  "platform": "win32",
+  "arch": "x64",
+  "files": {
+    "engine.jsc": "7dfc809f542def630e59e8b0bf7dd5ce613011a6df28d34a4acbeedd90c02b9d",
+    "bootstrap.cjs": "d3981ca66739edb092e815b309e9cf60cb46ccd5ae84aac96501177a610ef052",
+    "bytecode-loader.cjs": "dadf0da93f3d317b6f70250a751231eb167146c2c3ff02ebd5101929cb7f4f28",
+    "BYTENODE-LICENSE": "16d7ed7b8be9034217983ab33fda4efd22ed23962c4797699c94f159276d03f3",
+    "UPSTREAM-LICENSE": "b1d2870f1a00e4d7f56576e5f0870cba109e041f8af66866cf5b499478e654e7",
+    "UPSTREAM-NOTICE": "4a439a29366f485f5ef493a804a4c77a23b41d31eaf97eb66b921e5484bc597d",
+    "ENGINE-LICENSE.txt": "5c9045a7877761c878279070c61edec259e6b08b2ba51102993e58092641cb30"
+  }
+}

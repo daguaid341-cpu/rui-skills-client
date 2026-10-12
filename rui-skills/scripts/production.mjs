@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Thin client: all production logic executes on the authenticated server.
+// Open client: production executes in the local compiled engine.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { authorize, productionRequest } from './local-gate.mjs';
+import { ensureEngine, productionRequest } from './local-engine.mjs';
 
 export const FILES = {outline: 'outline/outline.json', cast: 'characters/cast.json', art: 'art/art.json', script: 'script/script.json', storyboard: 'storyboard/storyboard.json'};
 const MODULES = ['novel-outline','novel-characters','novel-art','novel-script','novel-storyboard'];
@@ -17,7 +17,7 @@ export function loadProject(directory) {
   const root = fs.realpathSync(directory), docs = {};
   const readProjectFile = file => {
     const resolved = fs.realpathSync(file);
-    if (!resolved.startsWith(root + path.sep)) throw new Error('项目文件链接指向项目目录之外，已停止上传');
+    if (!resolved.startsWith(root + path.sep)) throw new Error('项目文件链接指向项目目录之外，已停止读取');
     return read(resolved);
   };
   for (const [key, rel] of Object.entries(FILES)) {
@@ -30,7 +30,7 @@ export function loadProject(directory) {
 }
 export async function checkProject(project, options = {}) {
   const result = await productionRequest({command: 'check', project: {docs: project.docs, production: project.production}, options});
-  if (!result?.report) throw new Error(result?.errors?.join('；') || '服务结果无效');
+  if (!result?.report) throw new Error(result?.errors?.join('；') || '引擎结果无效');
   return result.report;
 }
 export async function exportText(project, options = {}) {
@@ -48,11 +48,11 @@ function save(file, content) {
 export async function main(argv) {
   const [command, target, ...args] = argv;
   if (!command || ['--help','-h'].includes(command)) {
-    console.log('Rui-Skills 在线制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length] [--allow-music] [--out 路径]\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
+    console.log('Rui-Skills 本地制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length] [--allow-music] [--out 路径]\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
   }
   if (!target) throw new Error('缺少项目或模块');
-  // Check before reading user files; the server checks again when executing.
-  await authorize();
+  // Verify the local runtime before reading project inputs.
+  ensureEngine();
   let result, output;
   if (command === 'run') {
     if (!MODULES.includes(target)) throw new Error('模块无效');
@@ -72,7 +72,7 @@ export async function main(argv) {
       else if (flag === '--per-volume') settings.perVolume = Number(value);
       else if (flag === '--eps') { const m = /^(\d+)(?:-(\d+))?$/.exec(value); if (!m) throw new Error('集数范围无效'); settings.episodes = [+m[1], +(m[2] || m[1])]; }
       else if (flag === '--out') output = value;
-      else throw new Error('不支持的参数；服务器不接受文件路径、任意命令或模型配置');
+      else throw new Error('不支持的参数；此入口不接受任意命令或模型配置');
     }
     const document = action === 'slug' ? input : action === 'ui-template' ? null : read(input, action === 'chunk');
     result = await productionRequest({command:'module', module:target, action, document, context, settings});
@@ -91,7 +91,7 @@ export async function main(argv) {
   }
   if (!result?.ok) {
     if (result?.guidance?.id === 'check-input-first') console.error('云端提示：请先对照数据契约检查必填字段，并先运行 check，再导出。');
-    throw new Error(result?.report?.errors?.join('\n') || result?.errors?.join('\n') || '服务器拒绝或制作失败');
+    throw new Error(result?.report?.errors?.join('\n') || result?.errors?.join('\n') || '本地制作失败');
   }
   const content = result.text ?? result.html ?? JSON.stringify(result.data ?? result, null, 2);
   if (output) save(output, content);

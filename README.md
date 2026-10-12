@@ -1,29 +1,48 @@
-# Rui-Skills 开源客户端
+# Rui-Skills
 
-面向真人剧与漫剧的30秒分镜制作客户端。客户端以 Apache-2.0 开源；校验、模板、导出和云端改进服务由私有服务器提供。
+开源客户端＋闭源本地引擎，提供真人剧/漫剧分镜与人物三视图工作流。**无需 Rui-Skills 设备凭证、管理员发放或版本审批；安装后本地制作不依赖云端。**
 
-## 安装与使用
+## 安装
 
-需要 Node.js 24 或以上；本地复盘日志另需 Python 3。将本仓库的 `rui-skills/` 作为技能目录安装到支持 SKILL.md 的工具中，或从该目录直接运行命令。
+当前已验证引擎支持 **Windows x64、Node.js 24.15.0**。下载本仓库，将 `rui-skills/` 安装为技能目录。在该目录运行一次：
 
-1. 向提供技能的管理员申请设备凭证，通过私密渠道领取。
-2. 运行 `node scripts/local-gate.mjs configure-client --from 私有凭证.json`。
-3. 运行 `node scripts/local-gate.mjs verify` 验证服务权限。
-4. 按[数据契约](rui-skills/references/production-data.md)准备项目，运行 `node scripts/production.mjs check 项目目录`。
-5. 运行 `node scripts/production.mjs export-text 项目目录 --out 新分镜.md`。
+```text
+node scripts/install-engine.mjs
+```
 
-保留服务器发放、换发、停用凭证的机制；安装公开代码不自动获得服务权限。服务地址随私有凭证提供，不能自行伪造授权。公开仓库不提供私有后端的自行部署版本。
+安装器从本仓库 Release 下载闭源编译引擎，逐文件校验固定SHA-256。需要联网的只是初次下载；此后断网仍可校验、导出、生成提示词和管理角色资产。其他系统暂不提供已验证的引擎包。Python 3 仅用于可选的本地复盘日志。
 
-## 数据与云端更新
+## 功能
 
-在线制作会发送选定的制作资料，见[授权与隐私](rui-skills/references/local-verification.md)。可选使用指标默认关闭；用户同意后执行 `node scripts/usage-metrics.mjs enable --consent`，之后自动统计操作、结果和耗时档位。执行 `node scripts/usage-metrics.mjs disable` 可关闭。
+- 小说大纲、人物、美术、剧本与分镜的结构化操作、校验、30秒分镜导出和HTML报告。
+- 真人/漫剧人物三视图提示词、正面锚点、独立正侧背资产、历史版本、过期检查与实际图像导入。
+- 当前会话的图像工具负责实际生图；引擎不自带模型，不提供免费生图额度。没有可用图像工具时可交付提示词，但不能声称已出图。
+- 云端仅接收用户同意的固定指标/生成痛点反馈，并分发签名预设规则；不承担制作或授权。
 
-学习数据只保存按日聚合的固定指标，保留30天；不保存剧情、图片、聊天、凭证或个人标识。云端据此自动调整预设帮助提示，下一次请求即可使用；这不是训练模型或自动改写创作核心。核心代码与规则更新由服务管理员验证发布。详见[记录与复盘](rui-skills/references/learning-loop.md)。
+```text
+node scripts/production.mjs check 项目目录
+node scripts/production.mjs export-text 项目目录 --out 新分镜.md
+node scripts/production.mjs report 项目目录 --out 新报告目录
+node scripts/character.mjs workflow turnaround
+node scripts/character.mjs sheet 观察.json --out 三视图提示词.json
+node scripts/character.mjs asset intake-template
+node scripts/character.mjs workflow assets
+```
 
-## 开源边界
+[制作数据契约](rui-skills/references/production-data.md) · [人物三视图](rui-skills/references/character.md) · [反馈与更新](rui-skills/references/learning-loop.md) · [隐私与本地运行](rui-skills/references/local-verification.md)
 
-本仓库只有客户端、技能入口、数据契约与许可声明。制作核心、服务端代码、底层架构、部署配置、管理员工具、用户素材、日志、凭证和旧Git历史不在本仓库中。人物三视图独立技能未包含在此发布中。
+## 从反复生成中改进
 
-Apache-2.0 仅适用于本仓库公开文件；云端服务及未发布的私有实现不因此开源。公开文件保留上游署名，见 [LICENSE](LICENSE) 与 [NOTICE](NOTICE)。
+重点是解决真实生成痛点：身份漂移、肤质、裁切、侧背角度、分镜连续性与时长。每次真实生成后记录实际观察的结果和尝试次数，定向调整并重试；成功与失败都计入。默认每项任务最多3次生成尝试，更多次数须用户给出明确预算，不能空跑或伪造验收。
 
-在 Issue 中仅提交脱敏的客户端问题，不要提交真实凭证、私人材料或完整请求正文。源代码可修改；使用运营方服务仍需其批准的客户端版本。
+指标、生成反馈、自动更新分别默认关闭，由使用者明确同意后开启。反馈只发送固定类别、结果、尝试档位和是否使用增强预设，不上传图片、剧情、聊天、路径、姓名或自由文本。临时随机任务编号仅用于短期去重，不写入长期聚合。
+
+云端对近期多次结果进行统计，为反复失败的类别启用经过结构与行为验证的增强预设；有足够后续结果时比较失败率，恶化则撤回。签名更新自动分发，本地验证后生效；可回滚并暂停自动更新。统计不保证因果或视觉效果，不把高频请求当作质量证明。
+
+**不接模型，不训练模型，不生成任意新规则或代码。进化范围是已有预设的选择、试用、效果比较和回退。**
+
+## 开源与闭源边界
+
+本仓库的客户端与文档采用 Apache-2.0。Release 中的本地引擎为闭源字节码分发；原始制作核心、私有工作流实现、构建源码、服务端架构及签名私钥不在仓库中。上游组件及加载器的许可与署名随引擎保留，见引擎内许可文件。
+
+本地二进制/字节码不保证无法逆向；引擎许可不限制上游已有开源权利。请勿在公开 Issue 中提交私密内容。
