@@ -11,7 +11,7 @@ description: Create live-action or comic storyboard projects and character turna
 
 Node.js版本须与 `engine-manifest.json` 一致；使用匹配版本运行全部命令，不修改版本约束绕过兼容检查。
 
-- **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认按紧凑短剧节奏安排可变时长，不为凑满30秒拖长或增加组数；30秒仅为当前每组上限。默认Word交付、韩语对白且无中文释义，镜头与动作说明用中文，无BGM和字幕；用户明确要求优先。排镜与交付前必读[紧凑节奏与连续性](references/storyboard-pacing.md)。保留原始台词、已有角色和场景，不编造看过的材料。
+- **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认按紧凑短剧节奏安排可变时长，不为凑满30秒拖长或增加组数；30秒仅为当前每组上限。默认Word交付；原文同时提供外语台词和对应中文释义时，生成的分镜提示词只保留外语台词，不附中文释义；其他情况沿用原文台词语言。镜头与动作说明用中文，无BGM和字幕；用户明确要求优先。排镜与交付前必读[紧凑节奏与连续性](references/storyboard-pacing.md)。保留原始台词、已有角色和场景，不编造看过的材料。
 - **人物：**读[人物三视图](references/character.md)，实际查看当前指定图；运行 `node scripts/character.mjs workflow turnaround` 读取本地工作流。使用当前可用图像工具传入真实参考图并出图，再实际验收；只要提示词时不调用生图工具。需要独立锚点和版本管理时运行 `workflow assets`。
 - **反馈和改进：**读[痛点反馈闭环](references/learning-loop.md)。首次向使用者分别说明可选指标、生成结果反馈与规则更新，只有其明确同意的项目才开启；既有同意不重复询问。拒绝不影响任务。
 
