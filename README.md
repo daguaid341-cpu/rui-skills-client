@@ -14,7 +14,7 @@ node scripts/install-engine.mjs
 
 ## 功能
 
-- 小说大纲、人物、美术、剧本与分镜的结构化操作、校验、30秒分镜导出和HTML报告。
+- 小说大纲、人物、美术、剧本与分镜的结构化操作、校验、按实际时长分组的紧凑短剧分镜导出和HTML报告；默认Word交付，韩语对白且不附中文释义。
 - 真人/漫剧人物三视图提示词、正面锚点、独立正侧背资产、历史版本、过期检查与实际图像导入。
 - 当前会话的图像工具负责实际生图；引擎不自带模型，不提供免费生图额度。没有可用图像工具时可交付提示词，但不能声称已出图。
 - 云端仅接收用户同意的固定指标/生成痛点反馈，并分发签名预设规则；不承担制作或授权。
@@ -29,7 +29,11 @@ node scripts/character.mjs asset intake-template
 node scripts/character.mjs workflow assets
 ```
 
-[制作数据契约](rui-skills/references/production-data.md) · [人物三视图](rui-skills/references/character.md) · [反馈与更新](rui-skills/references/learning-loop.md) · [隐私与本地运行](rui-skills/references/local-verification.md)
+默认按剧情、自然对白和连续动作安排每镜时长，30秒只是当前每组上限，不强制填满；不固定组数或总片长。明确要求每组精确30秒时可使用 `--fixed-length`，旧 `--variable-length` 选项继续兼容。
+
+[节奏与连续性](rui-skills/references/storyboard-pacing.md) · [制作数据契约](rui-skills/references/production-data.md) · [人物三视图](rui-skills/references/character.md) · [反馈与更新](rui-skills/references/learning-loop.md) · [隐私与本地运行](rui-skills/references/local-verification.md)
+
+安装引擎后，在仓库根目录用匹配的Node.js运行 `node tests/production-timing.mjs`，可验证可变时长默认值、固定时长选项、实际时间导出与时长上限；测试使用合成剧情，断网执行，不调用配音或视频生成。
 
 ## 从反复生成中改进
 
@@ -46,3 +50,4 @@ node scripts/character.mjs workflow assets
 本仓库的客户端与文档采用 Apache-2.0。Release 中的本地引擎为闭源字节码分发；原始制作核心、私有工作流实现、构建源码、服务端架构及签名私钥不在仓库中。上游组件及加载器的许可与署名随引擎保留，见引擎内许可文件。
 
 本地二进制/字节码不保证无法逆向；引擎许可不限制上游已有开源权利。请勿在公开 Issue 中提交私密内容。
+

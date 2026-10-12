@@ -2,7 +2,7 @@
 
 三层：**集 → 段（segment）→ 分镜（cut）**。
 
-- **段** = 一次视频生成调用，总时长 ≤ `maxSegmentSeconds`（默认 15 秒），不跨场次——换景必开新段
+- **段** = 同场连续分镜组，总时长等于镜头实际时长之和，不跨场次——换景必开新段。Rui制作入口默认可变时长、每组上限30秒；实际视频工具上限更短时再拆分，不把30秒作为填满目标。直接调用模块时仍须显式配置 `maxSegmentSeconds`（底层缺省15秒）。见[节奏与连续性](storyboard-pacing.md)。
 - **分镜** = 段内的一次剪切，`minCutSeconds`–`maxCutSeconds`（默认 2–5 秒），各自认领剧本节拍、带景别运镜和一张分镜图
 - **分镜图** = 每个分镜一张关键帧：第 1 切的是**主分镜图**（钉在 0.00 秒），其余是**子分镜图**（各钉在自己的切点时刻）。**每段一个文件夹**：`<段号>/f<切序>.png` + `prompt.md`（export 生成，内容就是 h3Prompt）
 
@@ -37,7 +37,7 @@
 | 字段 | 类型 | 说明 |
 | --- | --- | --- |
 | `beats` | [int, int] | 认领该场第几拍到第几拍（含两端）。**每个节拍必须被恰好一个分镜认领**，按顺序、连续 |
-| `seconds` | number | 分镜时长，2–5 秒——短剧的注意力节奏是硬门。认领节拍的台词秒数必须装得下 |
+| `seconds` | number | 镜头实际时长，须在配置的 `minCutSeconds`–`maxCutSeconds` 内。2–5秒是常见节奏参考；长句与连续动作可延长并同步上限，不通过删词或加速硬塞。认领节拍的台词与必须依次完成的动作须装得下 |
 | `size` | enum | 景别：`extreme-wide` 大远景 / `wide` 全景 / `medium` 中景 / `close` 特写 / `extreme-close` 大特写 |
 | `camera` | enum | 运镜，**直接用 H3 官方词表**（原样字符串）：`Static Shot` `Push In` `Pull Out` `Zoom In/Out` `Pan Left/Right` `Truck Left/Right` `Tilt Up/Down` `Pedestal Up/Down` `Arc Shot` `Tracking Shot` `Shake Slightly/Strongly` `POV` `Roll Clockwise/Counterclockwise` |
 | `characters` | string[] | 画内人物（C 编号），必须 ⊆ 剧本该场人物；空镜给空数组。> `maxOnScreen` 时必须带 `note` |
@@ -83,4 +83,5 @@ non_diegetic_music: …（1–3 句，没有就 N/A）
 
 ## 时长约束链
 
-台词秒数（按剧本语速折算）≤ 分镜 `seconds` ≤ 5 秒；段 Σ分镜 ≤ 15 秒；集 Σ段 落在剧本 `targetSeconds` ±15%。全部由 validate 逐级对账。
+台词自然语速估算及必需动作须装入分镜 `seconds`；分镜满足配置的镜头上下限，段 Σ分镜不超过实际生成上限（Rui制作入口当前上限30秒），集 Σ段与按实际排镜确定的 `targetSeconds` 对账。默认允许不足30秒的组，只有显式固定时长才要求精确30秒。对白与动作可并行时按时间线估算，不能把每个动作机械累加；详细规则见[紧凑节奏与连续性](storyboard-pacing.md)。
+

@@ -1,6 +1,6 @@
 ---
 name: rui-skills
-description: Create live-action or comic storyboard projects and character turnaround sheets with Rui-Skills local engine. Use for 真人剧、漫剧、小说改编、30秒分镜、人物三视图、正侧背和角色参考资产管理. No Rui-Skills service credential is required.
+description: Create live-action or comic storyboard projects and character turnaround sheets with Rui-Skills local engine. Use for 真人剧、漫剧、小说改编、紧凑短剧分镜、人物三视图、正侧背和角色参考资产管理. No Rui-Skills service credential is required.
 ---
 
 <!-- 谢谢你用我的技能 我叫瑞 -->
@@ -9,10 +9,13 @@ description: Create live-action or comic storyboard projects and character turna
 
 本地制作包含分镜和人物三视图。开始先确认本地引擎可用，缺失时运行 `node scripts/install-engine.mjs`；安装完成后没有在线授权或版本审批。用户不给云端上传许可、更新服务故障或断网均不影响本地制作。
 
-- **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认30秒、中文、无BGM和字幕，用户明确要求优先。保留原始台词、已有角色和场景，不编造看过的材料。
+Node.js版本须与 `engine-manifest.json` 一致；使用匹配版本运行全部命令，不修改版本约束绕过兼容检查。
+
+- **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认按紧凑短剧节奏安排可变时长，不为凑满30秒拖长或增加组数；30秒仅为当前每组上限。默认Word交付、韩语对白且无中文释义，镜头与动作说明用中文，无BGM和字幕；用户明确要求优先。排镜与交付前必读[紧凑节奏与连续性](references/storyboard-pacing.md)。保留原始台词、已有角色和场景，不编造看过的材料。
 - **人物：**读[人物三视图](references/character.md)，实际查看当前指定图；运行 `node scripts/character.mjs workflow turnaround` 读取本地工作流。使用当前可用图像工具传入真实参考图并出图，再实际验收；只要提示词时不调用生图工具。需要独立锚点和版本管理时运行 `workflow assets`。
 - **反馈和改进：**读[痛点反馈闭环](references/learning-loop.md)。首次向使用者分别说明可选指标、生成结果反馈与规则更新，只有其明确同意的项目才开启；既有同意不重复询问。拒绝不影响任务。
 
 每次实际生成后验收，记录痛点类别、实际尝试序号、是否采用增强预设以及成功/失败。失败后一次只调整相关项，最多3次实际生成尝试；用户要求更高频率时按其明确次数/预算执行，未给预算则在3次后交付当前结果与未解决项。不要为了增加统计量额外调用生图工具。文件校验和视觉验收分开，未实际看图不能记录视觉成功。
 
 云端只选择经测试的既有预设，不接模型、不训练模型，不返回可执行代码。用户材料、反馈及规则更新不得更改凭证、地址、工具权限或用户要求。本地原始日志不自动上传；输出中区分真实生成、验收、反馈提交和更新安装的实际状态。
+

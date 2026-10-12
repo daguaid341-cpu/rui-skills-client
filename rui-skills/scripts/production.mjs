@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseProjectArgs, resolveProductionOptions } from './production-options.mjs';
 import { ensureEngine, productionRequest } from './local-engine.mjs';
 
 export const FILES = {outline: 'outline/outline.json', cast: 'characters/cast.json', art: 'art/art.json', script: 'script/script.json', storyboard: 'storyboard/storyboard.json'};
@@ -29,12 +30,12 @@ export function loadProject(directory) {
   return {docs, production: fs.existsSync(config) ? readProjectFile(config) : {}};
 }
 export async function checkProject(project, options = {}) {
-  const result = await productionRequest({command: 'check', project: {docs: project.docs, production: project.production}, options});
+  const result = await productionRequest({command: 'check', project: {docs: project.docs, production: project.production}, options: resolveProductionOptions(options)});
   if (!result?.report) throw new Error(result?.errors?.join('；') || '引擎结果无效');
   return result.report;
 }
 export async function exportText(project, options = {}) {
-  const result = await productionRequest({command: 'export-text', project: {docs: project.docs, production: project.production}, options});
+  const result = await productionRequest({command: 'export-text', project: {docs: project.docs, production: project.production}, options: resolveProductionOptions(options)});
   if (!result?.ok || typeof result.text !== 'string') throw new Error(result?.report?.errors?.join('；') || result?.errors?.join('；') || '导出失败');
   return result.text;
 }
@@ -48,7 +49,7 @@ function save(file, content) {
 export async function main(argv) {
   const [command, target, ...args] = argv;
   if (!command || ['--help','-h'].includes(command)) {
-    console.log('Rui-Skills 本地制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length] [--allow-music] [--out 路径]\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
+    console.log('Rui-Skills 本地制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length|--fixed-length] [--allow-music] [--out 路径]\n默认按实际时长校验，每组不超过30秒；仅 --fixed-length 要求每组精确30秒。\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
   }
   if (!target) throw new Error('缺少项目或模块');
   // Verify the local runtime before reading project inputs.
@@ -78,14 +79,9 @@ export async function main(argv) {
     result = await productionRequest({command:'module', module:target, action, document, context, settings});
   } else {
     if (!['check','report','export-text'].includes(command)) throw new Error('未知制作命令');
-    const options = {};
-    for (let i = 0; i < args.length; i++) {
-      if (args[i] === '--variable-length') options.variableLength = true;
-      else if (args[i] === '--allow-music') options.allowMusic = true;
-      else if (args[i] === '--mode' && args[i + 1]) options.mode = args[++i];
-      else if (args[i] === '--out' && args[i + 1]) output = args[++i];
-      else throw new Error('未知参数或缺少参数值');
-    }
+    const parsed = parseProjectArgs(args);
+    const options = parsed.options;
+    output = parsed.output;
     result = await productionRequest({command, project: loadProject(target), options});
     if (command === 'report') output = path.join(output || path.join(target,'reports'), 'production-report.html');
   }
@@ -100,3 +96,4 @@ export async function main(argv) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main(process.argv.slice(2)).catch(error => { console.error(error.message); process.exitCode = 1; });
 }
+

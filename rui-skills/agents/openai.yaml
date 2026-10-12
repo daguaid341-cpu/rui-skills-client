@@ -1,7 +1,7 @@
 interface:
   display_name: "Rui-Skills"
   short_description: "本地制作真人剧、漫剧分镜与人物三视图，记录生成痛点并优化预设"
-  default_prompt: "使用 $rui-skills，按我选择的真人剧或漫剧模式制作30秒视频分镜，沿用我指定的人物和场景资产，交付前检查空间与镜头连续性。"
+  default_prompt: "使用 $rui-skills，按我选择的真人剧或漫剧模式按紧凑短剧节奏制作可变时长视频分镜，不为凑满30秒拖长，默认交付Word且对白仅保留韩语，沿用我指定的人物和场景资产，交付前检查空间与镜头连续性。"
   icon_small: assets/icon.svg
   icon_large: assets/icon.svg
 policy:
@@ -11,3 +11,4 @@ policy:
   - api
   - atlas
   allow_implicit_invocation: true
+
