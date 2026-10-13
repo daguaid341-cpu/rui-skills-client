@@ -31,6 +31,9 @@ node scripts/character.mjs workflow assets
 
 默认按剧情、自然对白和连续动作安排每镜时长，30秒只是当前每组上限，不强制填满；不固定组数或总片长。明确要求每组精确30秒时可使用 `--fixed-length`，旧 `--variable-length` 选项继续兼容。
 
+统一提示词默认加入摄影规格：9:16 竖画幅，ARRI ALEXA 35（Open Gate 裁切 9:16），4K，24fps，180° 快门，真实电影质感，轻微胶片颗粒，自然肤色优先，不磨皮不塑料化，保留毛孔与唇部纹理。
+统一提示词只写共用摄影、画风、场景、光照和声音要求，不写人物站位或开场坐站位置；人物位置、手位、道具位置和轴线承接写入对应分镜的动作起点、镜头正文及剪切承接。引擎文本导出是中间稿，整理Word时落实上述规则。
+
 [节奏与连续性](rui-skills/references/storyboard-pacing.md) · [制作数据契约](rui-skills/references/production-data.md) · [人物三视图](rui-skills/references/character.md) · [反馈与更新](rui-skills/references/learning-loop.md) · [隐私与本地运行](rui-skills/references/local-verification.md)
 
 安装引擎后，在仓库根目录用匹配的Node.js运行 `node tests/production-timing.mjs`，可验证可变时长默认值、固定时长选项、实际时间导出与时长上限；测试使用合成剧情，断网执行，不调用配音或视频生成。

@@ -1,6 +1,6 @@
 # 制作接口
 
-排镜时先读[紧凑短剧节奏与交付](storyboard-pacing.md)。`export-text` 生成中间稿，最终分镜提示词默认整理为Word（`.docx`）。
+排镜时先读[紧凑短剧节奏与交付](storyboard-pacing.md)。`export-text` 生成中间稿，最终分镜提示词默认整理为Word（`.docx`）。最终Word的统一提示词须加入用户指定的默认摄影规格，且不包含人物站位；原始导出中的“站位：”及相关空间关系移入逐镜动作起点、镜头正文和衔接，详见上述参考。
 
 项目包含 `production.json`（mode为live-action或comic，可选style），以及按需提供的：
 
