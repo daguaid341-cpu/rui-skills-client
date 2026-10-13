@@ -45,7 +45,16 @@ try{
     const report=await checkProject(project);
     ok(report.errors.length===0,`${mode}: 18 seconds accepted by default: ${report.errors.join(';')}`);
     const text=await exportText(project);
-    ok(text.includes('15–18秒')&&text.split(line).length===2,`${mode}: actual endpoint and exact Korean dialogue exported once`);
+    ok(text.includes('18秒')&&text.includes('镜头6')&&!text.includes('15–18秒')&&text.split(line).length===2,`${mode}: compact order, actual segment duration and exact dialogue`);
+    const timed=await exportText(project,{timing:'seconds'});
+    ok(timed.includes('15–18秒'),'Explicit seconds show actual endpoint');
+    const full=await exportText(project,{detail:'full'});
+    ok(full.includes('15–18秒')&&full.includes('构图：三分法'),'Full output preserves timing and technical fields');
+    ok(!text.match(/统一提示词：[^\n]*站位：/)&&text.includes('动作起点：男人站在桌旁'),'Blocking belongs to the shot rather than the shared prompt');
+    const emotion=structuredClone(project);
+    emotion.docs.storyboard.episodes[0].segments[0].cuts[0].shot='男人愤怒地抬眼，眼睛发红，脸色发红。';
+    const visible=await exportText(emotion);
+    ok(!visible.includes('眼睛发红')&&!visible.includes('脸色发红')&&visible.includes('下颌绷紧')&&visible.includes(line),'Replace visual color descriptions while preserving dialogue');
     ok(JSON.stringify(project)===before,'Validation and export do not pad or mutate inputs');
     ok((await checkProject(project,{variableLength:false})).errors.some(x=>x.includes('30秒')),`${mode}: explicit fixed rejects 18 seconds`);
     await assert.rejects(()=>exportText(project,{variableLength:false}));checks++;
@@ -62,7 +71,9 @@ try{
   const cli=fileURLToPath(new URL('../rui-skills/scripts/production.mjs',import.meta.url));
   const run=(...args)=>spawnSync(process.execPath,[cli,...args],{encoding:'utf8',windowsHide:true,timeout:30000});
   const checked=run('check',projectDir);ok(checked.status===0,checked.stderr||checked.stdout);
-  const exported=run('export-text',projectDir);ok(exported.status===0&&exported.stdout.includes('15–18秒'),'CLI default export uses actual duration');
+  const exported=run('export-text',projectDir);ok(exported.status===0&&exported.stdout.includes('18秒')&&exported.stdout.includes('镜头6'),'CLI default export uses compact order and actual duration');
+  const timedExport=run('export-text',projectDir,'--timing','seconds');ok(timedExport.status===0&&timedExport.stdout.includes('15–18秒'),'CLI accepts explicit seconds');
+  const fullExport=run('export-text',projectDir,'--detail','full');ok(fullExport.status===0&&fullExport.stdout.includes('构图：三分法'),'CLI accepts full output');
   const out=path.join(temp,'reports');const reported=run('report',projectDir,'--out',out);
   ok(reported.status===0&&fs.existsSync(path.join(out,'production-report.html')),'CLI report defaults to variable duration');
   for(const command of ['check','export-text','report'])ok(run(command,projectDir,'--fixed-length').status!==0,`${command}: fixed request remains strict`);
