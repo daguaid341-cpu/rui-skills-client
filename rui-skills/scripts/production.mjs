@@ -49,7 +49,7 @@ function save(file, content) {
 export async function main(argv) {
   const [command, target, ...args] = argv;
   if (!command || ['--help','-h'].includes(command)) {
-    console.log('Rui-Skills 本地制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length|--fixed-length] [--allow-music] [--out 路径]\n默认按实际时长校验，每组不超过30秒；仅 --fixed-length 要求每组精确30秒。\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
+    console.log('Rui-Skills 本地制作：check|report|export-text <项目目录> [--mode live-action|comic] [--variable-length|--fixed-length] [--allow-music] [--detail compact|full] [--timing sequence|seconds] [--out 路径]\n默认按实际时长校验，每组不超过30秒；仅 --fixed-length 要求每组精确30秒。\nrun <module> <action> <input> [--script FILE] [--outline FILE] [--cast FILE] [--art FILE] [--html] [--out FILE]'); return;
   }
   if (!target) throw new Error('缺少项目或模块');
   // Verify the local runtime before reading project inputs.
@@ -70,6 +70,7 @@ export async function main(argv) {
       else if (flag === '--lang') context.lang = value;
       else if (flag === '--stage') settings.stage = value;
       else if (flag === '--protocol') settings.protocol = value;
+      else if (flag === '--detail') settings.detail = value;
       else if (flag === '--per-volume') settings.perVolume = Number(value);
       else if (flag === '--eps') { const m = /^(\d+)(?:-(\d+))?$/.exec(value); if (!m) throw new Error('集数范围无效'); settings.episodes = [+m[1], +(m[2] || m[1])]; }
       else if (flag === '--out') output = value;

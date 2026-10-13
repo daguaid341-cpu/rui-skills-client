@@ -1,10 +1,10 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1-local.1",
   "node": "24.15.0",
   "platform": "win32",
   "arch": "x64",
   "files": {
-    "engine.jsc": "7dfc809f542def630e59e8b0bf7dd5ce613011a6df28d34a4acbeedd90c02b9d",
+    "engine.jsc": "a1f1ffdde5f17caf0af2bab1bde4f7887ef9ba3f4f5fb3a579ba3ee82fa2ef0f",
     "bootstrap.cjs": "d3981ca66739edb092e815b309e9cf60cb46ccd5ae84aac96501177a610ef052",
     "bytecode-loader.cjs": "dadf0da93f3d317b6f70250a751231eb167146c2c3ff02ebd5101929cb7f4f28",
     "BYTENODE-LICENSE": "16d7ed7b8be9034217983ab33fda4efd22ed23962c4797699c94f159276d03f3",

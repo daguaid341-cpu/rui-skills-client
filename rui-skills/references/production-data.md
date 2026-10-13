@@ -29,4 +29,12 @@ run支持模块相应的validate/checkup/render/seed/assets/stats/export/chunk/m
 
 运行只读取指定JSON与明确指定的原文。单文件超过2MiB按分集拆分。引擎不编造缺失原文，不调用模型；正文由当前助手根据实际材料整理，最终模板、校验和导出在本地完成。
 
+## 提示词输出选项
 
+遵守[提示词输出规则](prompt-output.md)。`export-text` 默认 `--detail compact --timing sequence`，参考图按齐全处理；`--detail full` 保留完整摄影字段并默认显示秒数，`--timing sequence|seconds` 可覆盖时间显示。内部每组30秒上限与对白校验不变，不改源JSON。可选 `segment.unifiedPrompt` 覆盖项目级统一提示词，用于只输出当前段相关设定；可选 `segment.constraints` 为本段关键约束字符串数组。两种稿均替换生理变色表演描述、保留逐字台词。
+
+```text
+node scripts/production.mjs export-text 项目目录 --out 精简提示词.md
+node scripts/production.mjs export-text 项目目录 --detail full --out 完整分镜稿.md
+node scripts/production.mjs export-text 项目目录 --timing seconds --out 带时间提示词.md
+```
