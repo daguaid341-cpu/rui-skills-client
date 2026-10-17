@@ -23,7 +23,7 @@
 }
 ```
 
-`promptLang` 可省略（**默认 `en`——官方规范口径**）：整条英文，台词在 `<d>[Chinese]` 里保留原文。设成 `zh` 可切整条中文（对齐指令、字段名、镜头标记都有中文版）——偏离官方推荐的备选项。**禁角色名不跟着语言变**：两种模式的 H3 正文都用通用身份。
+`promptLang` 只控制内部 H3 协议正文，底层缺省为 `en`，编写时显式选择 `en` 或 `zh` 并保持协议结构一致。它不决定 Rui 最终文本交付语言：最终导演说明默认中文，台词保留原词，角色使用实际姓名。内部 H3 通用身份限制不应传播到最终稿。当前引擎的 `<d>[Chinese]` 是兼容校验标记，即使原台词为其他语言也不代表要读成中文；实际提交生成时须按目标工具格式明确真实语言，不能把标记当作语言识别结果。
 
 **Seedance 视频提示词不存在 JSON 里**：它由程序从 `shot`、构图量化字段、`blocking`、`soundscape`、`music` 和剧本台词现拼（结构见 `references/seedance-prompt.md`），报告和 `export --protocol seedance` 都用同一个拼法。
 
@@ -34,7 +34,7 @@
 | `id` | string | 段号 `E01-01`：集号 + 两位序号，**按顺序连号**。它就是素材文件名（`E01-01.mp4` / `E01-01-f1.png`） |
 | `sceneIndex` | int | 这一段在剧本该集的第几场（1 起）。段内全部分镜同场 |
 | `cuts` | cut[] | 段内分镜，按时间顺序。段总秒数 = 分镜秒数之和，**不单独存**——少一处会漂的冗余 |
-| `h3Prompt` | string | **一段一条 H3 视频提示词**，正文语言跟 `promptLang`（默认中文），结构见 `references/h3-prompt.md` |
+| `h3Prompt` | string | **一段一条 H3 视频提示词**，正文语言跟 `promptLang`（底层默认 `en`），结构见 `references/h3-prompt.md` |
 | `blocking` | string | **人物关系与构图逻辑**：开场那一瞬谁在画面左、谁在右、面朝哪、相距多远（厘米或步数）。一段一份，各镜从它出发。纯参考图出片时这是唯一说清「人在哪」的地方。**必填**（`composition` 门） |
 | `soundscape` | string | **Seedance 用的音景**（中文）：环境声、动作声、非语言人声，不复述台词。程序套上 `<>`，字段里别自己写 |
 | `music` | string | **Seedance 用的配乐**（中文），写配器与速度。没有就省略这个字段。程序套上 `（）` |
@@ -47,7 +47,7 @@
 | `beats` | [int, int] | 认领该场第几拍到第几拍（含两端）。**每个节拍必须被恰好一个分镜认领**，按顺序、连续 |
 | `seconds` | number | 镜头实际时长，须在配置的 `minCutSeconds`–`maxCutSeconds` 内。2–5秒是常见节奏参考；长句与连续动作可延长并同步上限，不通过删词或加速硬塞。认领节拍的台词与必须依次完成的动作须装得下 |
 | `size` | enum | 景别：`extreme-wide` 大远景 / `wide` 全景 / `medium` 中景 / `close` 特写 / `extreme-close` 大特写 |
-| `camera` | enum | 运镜，**直接用 H3 官方词表**（原样字符串）：`Static Shot` `Push In` `Pull Out` `Zoom In/Out` `Pan Left/Right` `Truck Left/Right` `Tilt Up/Down` `Pedestal Up/Down` `Arc Shot` `Tracking Shot` `Shake Slightly/Strongly` `POV` `Roll Clockwise/Counterclockwise` |
+| `camera` | enum | 运镜，**直接用 H3 官方词表**（原样字符串）：`Static Shot` `Push In` `Pull Out` `Zoom In` / `Zoom Out`、`Pan Left` / `Pan Right`、`Truck Left` / `Truck Right`、`Tilt Up` / `Tilt Down`、`Pedestal Up` / `Pedestal Down` `Arc Shot` `Tracking Shot` `Shake Slightly` / `Shake Strongly`、`POV`、`Roll Clockwise` / `Roll Counterclockwise`；每镜选一个完整值，斜线仅表示选项分隔，不是枚举内容 |
 | `characters` | string[] | 画内人物（C 编号），必须 ⊆ 剧本该场人物；空镜给空数组。> `maxOnScreen` 时必须带 `note` |
 | `props` | string[] | 画内道具（P 编号），必须 ⊆ 剧本该场道具。可省略 |
 | `frame` | string | **分镜图提示词**（中文）：这一格的主体、位置状态、动作瞬间、光线与氛围。景别中文词必须在里面；**直呼角色名**（它指的是挂上去的设定图） |
@@ -60,6 +60,8 @@
 | `stability` | enum | `stable` 稳定 / `slight-shake` 微晃 / `handheld` 手持 |
 | `sfx` | string | 这一镜自己的音效，段级音景之外，可选 |
 | `lighting` | string | 这一镜特有的光影，场景级之外，可选 |
+| `animation` | string | 漫剧可选：已有动作的起点、过程、接触及结果；Rui 文本导出保留，其他协议须核对实际输出 |
+| `visualTreatment` | string | 漫剧可选：符合当前画风的局部处理，不自动加特效或改画风；必要信息同步到 shot |
 | `recipe` | string | 镜头配方卡 id，可选。挂了 `--shots <卡片目录>` 才查（`shot-recipe` 门）。**cut 级不是 segment 级**——一段可以跨多种配方；**多格配方靠连续同 id 的分镜表达**，不是数组 |
 | `note` | string | 备注，可选 |
 
