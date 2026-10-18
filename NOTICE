@@ -25,3 +25,13 @@ The private hosted implementation is not included in this distribution.
 
 The bundled sample story `skills/storycast/examples/渡口.txt` is an original
 work written for this project and is covered by the same license.
+
+---
+
+ArtCraft compatibility test fixtures in tests/fixtures/artcraft are unmodified
+sources from https://github.com/storytold/artcraft at commit
+d4e4ac69bbd93d237eaf5d0260bc6a5ff3a5e373, used under the MIT license.
+Their upstream copyright and license are preserved in that directory's
+LICENSE-MIT; SOURCE.json records the selected files. No ArtCraft art assets,
+desktop executable or cloud service are bundled. The Rui blocking runtime
+is independently implemented and uses npm dependencies with their own licenses.

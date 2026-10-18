@@ -1,0 +1,49 @@
+{
+  "schema": "rui-blocking/1",
+  "title": "站位工具演示 · 门口交谈",
+  "units": "meters",
+  "room": {"width": 6, "depth": 5},
+  "characters": [
+    {"id": "A", "name": "林舟", "color": "#3879b8", "height": 1.78},
+    {"id": "B", "name": "沈宁", "color": "#d88655", "height": 1.65}
+  ],
+  "props": [
+    {"id": "table", "name": "边桌", "size": [1.2, 0.8, 0.65], "position": [1.85, 0.4, -1.2], "color": "#8c9ba9"},
+    {"id": "door", "name": "关闭房门", "size": [0.12, 2.1, 0.95], "position": [-2.95, 1.05, -1.2], "color": "#aab8c6"}
+  ],
+  "anchors": [
+    {"name": "西墙房门", "position": [-3, 0, -1.2]},
+    {"name": "东侧边桌", "position": [2.5, 0, -1.2]}
+  ],
+  "states": [
+    {
+      "id": "start", "label": "01 · 面对面交谈",
+      "placements": [
+        {"id": "A", "position": [-0.65, 0, 0], "facingDegrees": 90, "pose": "stand", "gaze": "B"},
+        {"id": "B", "position": [0.65, 0, 0], "facingDegrees": 270, "pose": "stand", "gaze": "A"}
+      ]
+    },
+    {
+      "id": "door-look", "label": "02 · 注意到门口",
+      "placements": [
+        {"id": "A", "position": [-0.65, 0, 0], "facingDegrees": 310, "pose": "stand", "gaze": "door"},
+        {"id": "B", "position": [0.65, 0, 0], "facingDegrees": 290, "pose": "stand", "gaze": "door"}
+      ],
+      "paths": [{"characterId": "A", "points": [[-0.65,0,0],[-1.6,0,-0.15],[-2.15,0,-1.2]], "toState": "approach"}]
+    },
+    {
+      "id": "approach", "label": "03 · 林舟走近房门",
+      "placements": [
+        {"id": "A", "position": [-2.15, 0, -1.2], "facingDegrees": 270, "pose": "reach-right", "gaze": "door"},
+        {"id": "B", "position": [0.65, 0, 0], "facingDegrees": 290, "pose": "stand", "gaze": "A"}
+      ]
+    }
+  ],
+  "shots": [
+    {"id": "shot01", "label": "交谈 · 双人构图", "stateId": "start", "subjects": ["A","B"], "axis": ["A","B"], "camera": {"position": [0.3,1.6,4.4], "target": [0,1.1,0], "focalLengthMm": 35, "aspect": [9,16]}},
+    {"id": "shot02", "label": "沈宁 · 从林舟端拍摄", "stateId": "start", "subjects": ["B"], "axis": ["A","B"], "camera": {"position": [-1.35,1.55,0.8], "target": [0.65,1.25,0], "focalLengthMm": 50, "aspect": [9,16]}},
+    {"id": "shot03", "label": "林舟 · 从沈宁端反打", "stateId": "start", "subjects": ["A"], "axis": ["A","B"], "camera": {"position": [1.35,1.65,0.8], "target": [-0.65,1.35,0], "focalLengthMm": 50, "aspect": [9,16]}},
+    {"id": "shot04", "label": "门口方向 · 二人反应", "stateId": "door-look", "subjects": ["A","B"], "camera": {"position": [-1.7,1.6,4.3], "target": [-0.15,1.15,0], "focalLengthMm": 35, "aspect": [9,16]}},
+    {"id": "shot05", "label": "走近房门 · 结束站位", "stateId": "approach", "subjects": ["A"], "camera": {"position": [-1.15,1.65,1.6], "target": [-2.15,1.1,-1.2], "focalLengthMm": 40, "aspect": [9,16]}}
+  ]
+}

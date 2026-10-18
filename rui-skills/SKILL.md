@@ -1,6 +1,6 @@
 ---
 name: rui-skills
-description: Create live-action or comic storyboard projects and character turnaround sheets with Rui-Skills local engine. Use for 真人剧、漫剧、小说改编、紧凑短剧分镜、人物三视图、正侧背和角色参考资产管理. No Rui-Skills service credential is required.
+description: Create live-action or comic storyboards, character turnaround sheets and local blocking diagrams with Rui-Skills. Use for 真人剧、漫剧、小说改编、紧凑短剧分镜、人物三视图、正侧背、角色参考资产管理、人物站位图、机位构图图和 ArtCraft 场景交换. No Rui-Skills service credential is required.
 ---
 
 <!-- 谢谢你用我的技能 我叫瑞 -->
@@ -11,12 +11,13 @@ description: Create live-action or comic storyboard projects and character turna
 
 用户于2026年10月15日指定的分镜生成要求同时适用：景别与侧面、斜侧等机位方向组合设计；台词镜头中讲话者面向被讲话者，摄像机从被讲话者这一端拍向讲话者，可在对话轴线同侧做过肩或斜侧取景，正反打保持视线与方位连续；同一次连续剧情分镜任务总时长超过30秒时，首组优先全景、中景，后续组禁用全景和中景。按[方向与跨组景别规则](references/narrative-camera-design.md)落实人物朝向、摄像机方向及逐镜取景，并在精简稿和完整稿中保留；用户后续明确要求优先。
 
-本地制作包含分镜和人物三视图。开始先确认本地引擎可用，缺失时运行 `node scripts/install-engine.mjs`；安装完成后没有在线授权或版本审批。用户不给云端上传许可、更新服务故障或断网均不影响本地制作。
+本地制作包含分镜、人物三视图和站位图。分镜和人物工作流开始先确认本地引擎可用，缺失时运行 `node scripts/install-engine.mjs`；站位图独立运行，按下述站位图说明安装依赖即可。安装完成后没有在线授权或版本审批。用户不给云端上传许可、更新服务故障或断网均不影响本地制作。
 
 Node.js版本须与 `engine-manifest.json` 一致；使用匹配版本运行全部命令，不修改版本约束绕过兼容检查。
 
 - **分镜：**按[制作数据契约](references/production-data.md)整理用户实际提供的材料，运行本地校验后导出分镜/报告。真人和漫剧分开；默认按紧凑短剧节奏安排可变时长，不为凑满30秒拖长或增加组数；30秒仅为当前每组上限。默认Word交付，按字段自然分段、段内自动折行，不插入按页面宽度截断的手动换行；原文同时提供外语台词和对应中文释义时，生成的分镜提示词只保留外语台词，不附中文释义；其他情况沿用原文台词语言。镜头与动作说明用中文，无BGM和字幕；用户明确要求优先。统一提示词不含人物站位；真人按参考中的基础摄影规格、电影人像与光学质感执行，漫剧先读[漫剧提示词质量](references/comic-prompt-quality.md)，按已定画风组织动画，不自动追加真人肤质和实拍设备模板；表演服从剧情与人物设定；人物位置、手位及轴线写入逐镜动作起点和承接。排镜与交付前必读[紧凑节奏与连续性](references/storyboard-pacing.md)。保留原始台词、已有角色和场景，不编造看过的材料。
 - **人物：**读[人物三视图](references/character.md)，实际查看当前指定图；运行 `node scripts/character.mjs workflow turnaround` 读取本地工作流。使用当前可用图像工具传入真实参考图并出图，再实际验收；只要提示词时不调用生图工具。需要独立锚点和版本管理时运行 `workflow assets`。
+- **站位图：**用户要求人物站位图、机位构图图、ArtCraft 场景交换，或复杂调度需要图示时，读[本地站位图](references/blocking-diagrams.md)。依据已知剧情与空间整理关键状态，运行 `node scripts/blocking.mjs render 站位.json --out 新目录`，实际看图后交付俯视图、无标注机位图和审阅页。位置估值注明导演设计，不增造剧情；静态简模不是角色定妆或已生成的视频，也不能替代跨组景别审阅。
 - **反馈和改进：**读[痛点反馈闭环](references/learning-loop.md)。首次向使用者分别说明可选指标、生成结果反馈与规则更新，只有其明确同意的项目才开启；既有同意不重复询问。拒绝不影响任务。
 
 每次实际生成后验收，记录痛点类别、实际尝试序号、是否采用增强预设以及成功/失败。失败后一次只调整相关项，最多3次实际生成尝试；用户要求更高频率时按其明确次数/预算执行，未给预算则在3次后交付当前结果与未解决项。不要为了增加统计量额外调用生图工具。文件校验和视觉验收分开，未实际看图不能记录视觉成功。

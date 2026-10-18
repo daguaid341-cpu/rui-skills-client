@@ -16,6 +16,7 @@ node scripts/install-engine.mjs
 
 - 小说大纲、人物、美术、剧本与分镜的结构化操作、校验、按实际时长分组的紧凑短剧分镜导出和HTML报告；默认Word交付；原文同时提供外语台词和对应中文释义时，生成的分镜提示词只保留外语台词，不附中文释义；其他情况沿用原文台词语言。
 - 真人/漫剧人物三视图提示词、正面锚点、独立正侧背资产、历史版本、过期检查与实际图像导入。
+- 本地人物站位图：带标注俯视图、无标注三维简模机位图、关键状态审阅页，以及 ArtCraft 基本几何体场景交换数据。首次安装依赖后离线运行，不需模型或 ArtCraft 账户。
 - 当前会话的图像工具负责实际生图；引擎不自带模型，不提供免费生图额度。没有可用图像工具时可交付提示词，但不能声称已出图。
 - 云端仅接收用户同意的固定指标/生成痛点反馈，并分发签名预设规则；不承担制作或授权。
 
@@ -45,6 +46,21 @@ node scripts/character.mjs workflow assets
 漫剧导出回归：`node tests/comic-quality.mjs`，检查双人交接、跨段持物、动画字段、原词对白、声音与画风覆盖；可用 `--out 新目录` 留存合成输入及导出文本。包含已知局限的复现：显式统一提示词可覆盖漫剧风格，自定义三维仍可能携带二维通用措辞，跨组景别限制由助手审阅，缺少映射时编号不会自动变成姓名。测试通过不代表这些局限已由引擎修复，也不代表视频质量通过。
 
 Word按提示词字段自然分段，段内自动折行，避免复制粘贴时出现按页面宽度截断的碎行。
+
+## 本地站位图
+
+在 `rui-skills/` 中运行：
+
+```text
+node scripts/blocking.mjs setup
+node scripts/blocking.mjs render assets/blocking-example.json --out 站位示例
+```
+
+打开输出目录的 `review.html`，选择关键状态查看俯视图与机位图。实际任务修改独立JSON输入，每次输出到新目录。图像生成不依赖闭源引擎；三维简模只表达站位、姿态和构图，不代表最终人物或画风。具体数据、持物/路径用法及检查限制见[本地站位图](rui-skills/references/blocking-diagrams.md)。
+
+[ArtCraft](https://github.com/storytold/artcraft) 提供三维场景编辑与AI创作工作流；本功能采用独立本地渲染与场景格式交换，未内嵌其完整编辑器。上游固定提交的对象加载器/序列化器已用于测试；桌面应用、相机恢复及现行版本的菜单导入未验证。上游测试源码和许可见 `tests/fixtures/artcraft/`。
+
+验证命令（仓库根目录）：`node tests/blocking.mjs`。开发兼容测试需先 `npm ci --prefix rui-skills/scripts/blocking --ignore-scripts --no-audit --no-fund` 安装开发依赖，再运行 `node tests/blocking-artcraft.mjs`。测试不调用生图或视频模型，也不等同于实际生成质量验收。
 
 ## v2.0.1 提示词输出
 

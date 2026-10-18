@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/storytold/artcraft",
+  "commit": "d4e4ac69bbd93d237eaf5d0260bc6a5ff3a5e373",
+  "license": "MIT",
+  "scope": "Unmodified loader sources for offline compatibility tests; no bundled art assets.",
+  "files": [
+    "frontend/libs/components/pagescene/src/lib/proxy/storyteller_proxy_scene.ts",
+    "frontend/libs/components/pagescene/src/lib/proxy/storyteller_proxy_3d_object.ts",
+    "frontend/libs/components/pagescene/src/lib/engine/KinHelpers/BoneJSONHelper.ts",
+    "frontend/libs/components/pagescene/src/lib/engine/internalBbox.ts",
+    "frontend/libs/components/pagescene/src/lib/enums/MediaFileType.ts",
+    "LICENSE-MIT",
+    "frontend/libs/components/pagescene/src/lib/engine/selectionColors.ts"
+  ]
+}
