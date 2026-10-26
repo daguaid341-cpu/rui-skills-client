@@ -1,9 +1,9 @@
 interface:
-  display_name: "Rui-Skills"
-  short_description: "本地制作真人剧、漫剧分镜与人物三视图，记录生成痛点并优化预设"
-  default_prompt: "使用 $rui-skills，按我选择的真人剧或漫剧模式按紧凑短剧节奏制作可变时长视频分镜，不为凑满30秒拖长，默认交付按字段自然分段、段内自动折行的Word，原文有外语台词及对应中文释义时只保留外语台词，其他情况沿用原文台词语言，统一提示词加入基础摄影规格与新增ARRI MINI、Alexa 65、85mm浅景深及符合剧情、人物设定的微表情要求且不写人物站位，将人物位置与手位写入逐镜动作起点和承接，沿用我指定的人物和场景资产，交付前检查空间与镜头连续性。"
-  icon_small: assets/icon.svg
-  icon_large: assets/icon.svg
+  display_name: "Rui-SHOOTING SCRIPT-Skiils"
+  short_description: "本地制作真人剧、3D漫剧分镜与人物三视图，按剧情组织七字段漫剧提示词"
+  default_prompt: "使用 $rui-skills，根据我提供的剧情制作真人剧或3D漫剧分镜；漫剧采用七字段模板并按剧情灵活切镜，依次梳理人物状态与叙事转折、确定每阶段观看对象、安排切点和调度、选择景别与运镜，按需使用表演、转场、动作与特效参考，再核算对白动作时长并复核连续性，交付可独立使用的分镜提示词。"
+  icon_small: "assets/icon.svg"
+  icon_large: "assets/icon.svg"
 policy:
   products:
   - chatgpt
@@ -11,5 +11,3 @@ policy:
   - api
   - atlas
   allow_implicit_invocation: true
-
-

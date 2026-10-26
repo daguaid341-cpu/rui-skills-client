@@ -1,4 +1,6 @@
-// Actual compiled-engine regression. Synthetic material only; no media generation.
+// Compiled engine 2.0.1 compatibility regression, including legacy 2D defaults.
+// Skill 2.5.0 final delivery is 3D; these raw exports are not final prompts.
+// Synthetic material only; no media generation.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -58,7 +60,7 @@ try {
     ok(text.includes('中文，画内')&&text.includes('不对口型'),'Voice language and silent listener survive');
   }
   ok(!compact.includes('15–18秒')&&full.includes('15–18秒'),'Sequence and timed formats differ correctly');
-  ok(project.docs.storyboard.episodes[0].segments[1].cuts.every(c=>c.size==='close'),'Later group obeys existing shot-size restriction');
+  ok(project.docs.storyboard.episodes[0].segments[1].cuts.every(c=>c.size==='close'),'Fixture deliberately retains close framing; it is not a group-order rule');
   ok(JSON.stringify(project)===before,'Export does not mutate source');
   const live=structuredClone(project);live.production.mode='live-action';
   const liveText=await exportText(live);
@@ -74,9 +76,9 @@ try {
   const model3d=structuredClone(project);model3d.production.style='三维卡通渲染，模型比例与材质保持一致';
   const threeD=await exportText(model3d,{detail:'full'});
   ok(threeD.includes('三维卡通渲染')&&threeD.includes('线条'),'Observed limitation: custom 3D style retains generic comic line-art wording');
-  const invalidCoverage=structuredClone(project);
-  const later=invalidCoverage.docs.storyboard.episodes[0].segments[1].cuts[0];later.size='medium';later.frame='中景，沈宁将信封收至胸前。';
-  ok((await checkProject(invalidCoverage)).errors.length===0,'Observed limitation: user-specific later-group shot restriction is not enforced by the engine');
+  const alternateCoverage=structuredClone(project);
+  const later=alternateCoverage.docs.storyboard.episodes[0].segments[1].cuts[0];later.size='medium';later.frame='中景，沈宁将信封收至胸前。';
+  ok((await checkProject(alternateCoverage)).errors.length===0,'Later-group medium framing is allowed; shot choice is a narrative decision');
   const tooLong=structuredClone(project);tooLong.docs.storyboard.episodes[0].segments[0].cuts[0].seconds=20;
   ok((await checkProject(tooLong)).errors.length>0,'Over-limit timing rejected');
   const music=structuredClone(project);music.docs.storyboard.episodes[0].segments[0].music='欢快钢琴配乐';
@@ -88,7 +90,7 @@ try {
     const output=path.resolve(process.argv[outputIndex+1]);fs.mkdirSync(output,{recursive:true});
     for(const [name,value] of Object.entries({'project.json':JSON.stringify(project,null,2),'engine-check.json':JSON.stringify(report,null,2),'compact-raw.md':compact,'full-raw.md':full,'stale-style-raw.md':inherited,'corrected-raw.md':corrected}))fs.writeFileSync(path.join(output,name),value,{flag:'wx'});
   }
-  console.log(JSON.stringify({checks,engine:'installed compiled engine',text:'synthetic export checked',limitations:['Explicit unifiedPrompt overrides comic style without a conflict error','Custom 3D style retains generic line-art wording','User-specific later-group shot restriction is not enforced by the engine','Absent outline/art leaves dialogue and scene IDs unresolved; human finalization required',...report.skipped],voice:'not_run',video:'not_run'},null,2));
+  console.log(JSON.stringify({checks,engine:'installed compiled engine',text:'synthetic export checked',limitations:['Explicit unifiedPrompt overrides comic style without a conflict error','Custom 3D style retains generic line-art wording','Absent outline/art leaves dialogue and scene IDs unresolved; human finalization required',...report.skipped],voice:'not_run',video:'not_run'},null,2));
 } finally {
   https.request=request;
   if(previousState===undefined)delete process.env.RUI_STATE_DIR;else process.env.RUI_STATE_DIR=previousState;

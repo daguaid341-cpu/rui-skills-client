@@ -1,28 +1,59 @@
-# Rui-Skills
+# Rui-SHOOTING SCRIPT-Skiils
 
-开源客户端＋闭源本地引擎，提供真人剧/漫剧分镜与人物三视图工作流。**无需 Rui-Skills 设备凭证、管理员发放或版本审批；安装后本地制作不依赖云端。**
+公开技能版 **2.5.0**，本地编译引擎 **2.0.1**。提供真人剧、3D漫剧分镜、人物三视图和离线站位图工作流，保留 `$rui-skills` 调用名及 `rui-skills/` 目录。无需 Rui-Skills 设备凭证、管理员发放或版本审批；引擎首次安装后可离线制作。
+
+公开分发地址：[rui-skills-client](https://github.com/daguaid341-cpu/rui-skills-client)，默认分支 `main`。版本见 [VERSION](rui-skills/VERSION)、[技能清单](rui-skills/skill-manifest.json)，更新见 [CHANGELOG.md](CHANGELOG.md)。技能规则与引擎版本分别维护。
+
+## 2.5.0 功能
+
+- **叙事排镜。**依次提取材料与人物状态、梳理节拍、分配观看重点、决定切点、设计调度与摄影、核算时间、复核连续性。镜数和景别服务关系与已有动作，不按说话人、句号或组序机械切镜。
+- **3D七字段成稿。**漫剧只输出3D动画或风格化三维CG，逐镜使用画面、镜头、运镜、角色动作 & 表情、台词、约束、特效 & 转场。真人摄影与肤质不自动追加到漫剧。
+- **场景光影设计。**先确定已有光源、方向、软硬、补光与反射、冷暖、曝光和灰度，再逐镜落实人物受光、转身位移、遮挡与跨镜连续性。数字仅在有依据且需要时使用，标明比较对象、计量口径及设计/参考/实测状态。3D受光写入“画面”，动态变化写入“角色动作 & 表情”，连续性写入“约束”，保持七字段。
+- **导演参考。**按场景读取摄影、运镜、表演、转场、动作和特效参考，不把术语或示例变成固定套餐。
+- **独立提示词。**保留实名与原始对白；外语对白同时有中文释义时只保留外语，否则沿用原语言。直接写明动作主体、视线、持物、声音及触发时机，不依赖未随组提交的剧本或其他组。完整新分镜默认Word交付，局部修改按请求范围输出。
+- **本地项目与人物资产。**大纲、人物、美术、剧本和分镜的结构化操作、校验、文本导出和HTML报告；正面锚点、独立正侧背、版本管理、过期检查和实际图片导入。
+- **离线站位图。**保留带标注俯视图、无标注三维简模机位图、关键状态审阅页，以及ArtCraft基本几何体场景交换。首次安装依赖后离线运行，不需模型或ArtCraft账户。
+
+每镜时长按完整对白和已有动作的顺序、并行及收尾估算；每组上限30秒，不要求填满，不固定总片长。首组与后续组均按剧情选景别，撤销旧的“后续组禁全景/中景”规则。未知但必需的站位、手位或衔接先询问，不自行补造动作、道具、经历或人物已知信息。
+
+真人剧默认参考9:16、ALEXA 35质感、4K、24fps、180°快门，保持自然肤色与皮肤纹理。其他机身及光学参考用于选择质感，不堆成多套实际摄影设置；景深、光色与表演幅度按本场信息决定。默认无字幕、无BGM，用户明确要求优先。
 
 ## 安装
 
-当前已验证引擎支持 **Windows x64、Node.js 24.15.0**。下载本仓库，将 `rui-skills/` 安装为技能目录。在该目录运行一次：
+已验证平台为 **Windows x64、Node.js 24.15.0**。下载本仓库，将完整 `rui-skills/` 安装为技能目录，不要仅复制SKILL.md。在该目录运行：
 
 ```text
+node --version
 node scripts/install-engine.mjs
 ```
 
-安装器从本仓库 Release 下载闭源编译引擎，逐文件校验固定SHA-256。需要联网的只是初次下载；此后断网仍可校验、导出、生成提示词和管理角色资产。其他系统暂不提供已验证的引擎包。Python 3 仅用于可选的本地复盘日志。
+安装器从本仓库的引擎 **v2.0.1 Release** 下载原版编译文件，逐文件校验固定SHA-256。技能2.5.0不代表引擎升级到2.5.0。首次下载需联网；随后可离线校验、导出、生成提示词及管理资产。不要绕过Node版本或摘要检查。其他平台暂未提供已验证引擎包；Python 3仅用于可选本地复盘日志。
 
-## 功能
+## 技能用法与参考
 
-- 小说大纲、人物、美术、剧本与分镜的结构化操作、校验、按实际时长分组的紧凑短剧分镜导出和HTML报告；默认Word交付；原文同时提供外语台词和对应中文释义时，生成的分镜提示词只保留外语台词，不附中文释义；其他情况沿用原文台词语言。
-- 真人/漫剧人物三视图提示词、正面锚点、独立正侧背资产、历史版本、过期检查与实际图像导入。
-- 本地人物站位图：带标注俯视图、无标注三维简模机位图、关键状态审阅页，以及 ArtCraft 基本几何体场景交换数据。首次安装依赖后离线运行，不需模型或 ArtCraft 账户。
-- 当前会话的图像工具负责实际生图；引擎不自带模型，不提供免费生图额度。没有可用图像工具时可交付提示词，但不能声称已出图。
-- 云端仅接收用户同意的固定指标/生成痛点反馈，并分发签名预设规则；不承担制作或授权。
+```text
+使用 $rui-skills，把我提供的剧情制作成3D漫剧分镜；保留实名与完整对白，采用七字段模板，按剧情设计镜头和光影，每组不超过30秒，交付Word。
+```
+
+从 [SKILL.md](rui-skills/SKILL.md) 进入，按任务读取：
+
+| 任务 | 参考 |
+| --- | --- |
+| 排镜与时长 | [叙事设计](rui-skills/references/narrative-camera-design.md)、[节奏与连续性](rui-skills/references/storyboard-pacing.md) |
+| 模式与成稿 | [模式规则](rui-skills/references/mode-profiles.md)、[3D七字段](rui-skills/references/comic-3d-template.md)、[输出规则](rui-skills/references/prompt-output.md) |
+| 光影与摄影 | [光影设计](rui-skills/references/lighting-design.md)、[摄影实务](rui-skills/references/camera-practice.md)、[摄影术语](rui-skills/references/cinematography-vocabulary.md) |
+| 表演与动作 | [表演调度](rui-skills/references/performance-direction.md)、[动作设计](rui-skills/references/action-choreography.md)、[特效](rui-skills/references/visual-effects.md)、[转场](rui-skills/references/transitions.md) |
+| 空间与导出检查 | [空间调度](rui-skills/references/space-and-blocking.md)、[漫剧质量](rui-skills/references/comic-prompt-quality.md) |
+| 项目与人物 | [制作数据](rui-skills/references/production-data.md)、[人物三视图](rui-skills/references/character.md) |
+
+## 命令行
+
+在 `rui-skills/` 中用清单指定的Node运行：
 
 ```text
 node scripts/production.mjs check 项目目录
-node scripts/production.mjs export-text 项目目录 --out 新分镜.md
+node scripts/production.mjs export-text 项目目录 --timing seconds --out 新分镜.md
+node scripts/production.mjs export-text 项目目录 --detail full --timing seconds --out 完整摄影稿.md
 node scripts/production.mjs report 项目目录 --out 新报告目录
 node scripts/character.mjs workflow turnaround
 node scripts/character.mjs sheet 观察.json --out 三视图提示词.json
@@ -30,22 +61,7 @@ node scripts/character.mjs asset intake-template
 node scripts/character.mjs workflow assets
 ```
 
-默认按剧情、自然对白和连续动作安排每镜时长，30秒只是当前每组上限，不强制填满；不固定组数或总片长。明确要求每组精确30秒时可使用 `--fixed-length`，旧 `--variable-length` 选项继续兼容。
-
-真人剧统一提示词默认加入摄影规格：9:16 竖画幅，ARRI ALEXA 35（Open Gate 裁切 9:16），4K，24fps，180° 快门，真实电影质感，轻微胶片颗粒，自然肤色优先，不磨皮不塑料化，保留毛孔与唇部纹理。
-统一提示词只写共用摄影、画风、场景、光照和声音要求，不写人物站位或开场坐站位置；人物位置、手位、道具位置和轴线承接写入对应分镜的动作起点、镜头正文及剪切承接。引擎文本导出是中间稿，整理Word时落实上述规则。
-
-真人电影人像与表演要求：统一提示词追加ARRI MINI、85mm f/1.2、Alexa 65与Panavision光学质感参考，低对比暖调、柔光肤质、散景、胶片颗粒，以及依据剧情和人物设定安排的眨眼与细微表情，禁止角色实体重复、字幕和配乐。完整摄影参考、单镜参数及表演安排原则见[摄影与表演规则](rui-skills/references/storyboard-pacing.md#新增电影人像与表演要求)。
-
-漫剧按[漫剧提示词质量](rui-skills/references/comic-prompt-quality.md)保持二维、三维或指定表现方式，不自动追加真人毛孔与实拍模板。排镜先按[空间与人物调度](rui-skills/references/space-and-blocking.md)设计冲突、路径和控制关系，并区分原稿事实与导演安排。
-
-[节奏与连续性](rui-skills/references/storyboard-pacing.md) · [制作数据契约](rui-skills/references/production-data.md) · [人物三视图](rui-skills/references/character.md) · [反馈与更新](rui-skills/references/learning-loop.md) · [隐私与本地运行](rui-skills/references/local-verification.md)
-
-安装引擎后，在仓库根目录用匹配的Node.js运行 `node tests/production-timing.mjs`，可验证可变时长默认值、固定时长选项、实际时间导出与时长上限；测试使用合成剧情，断网执行，不调用配音或视频生成。
-
-漫剧导出回归：`node tests/comic-quality.mjs`，检查双人交接、跨段持物、动画字段、原词对白、声音与画风覆盖；可用 `--out 新目录` 留存合成输入及导出文本。包含已知局限的复现：显式统一提示词可覆盖漫剧风格，自定义三维仍可能携带二维通用措辞，跨组景别限制由助手审阅，缺少映射时编号不会自动变成姓名。测试通过不代表这些局限已由引擎修复，也不代表视频质量通过。
-
-Word按提示词字段自然分段，段内自动折行，避免复制粘贴时出现按页面宽度截断的碎行。
+仅明确要求每组精确30秒时使用 `--fixed-length`；旧 `--variable-length` 继续兼容。CLI导出是中间稿，助手按当前规则整理最终提示词，不能声称程序已自动输出3D七字段。Word按字段自然分段、段内自动折行。
 
 ## 本地站位图
 
@@ -56,42 +72,34 @@ node scripts/blocking.mjs setup
 node scripts/blocking.mjs render assets/blocking-example.json --out 站位示例
 ```
 
-打开输出目录的 `review.html`，选择关键状态查看俯视图与机位图。实际任务修改独立JSON输入，每次输出到新目录。图像生成不依赖闭源引擎；三维简模只表达站位、姿态和构图，不代表最终人物或画风。具体数据、持物/路径用法及检查限制见[本地站位图](rui-skills/references/blocking-diagrams.md)。
+打开输出 `review.html`，查看各关键状态的俯视图和机位图。实际任务使用独立JSON，每次输出到新目录；位置、路线、朝向及持物数据须已知或已确认。简模只表达空间与构图，不代表最终人物或画风。数据及限制见[本地站位图](rui-skills/references/blocking-diagrams.md)。
 
-[ArtCraft](https://github.com/storytold/artcraft) 提供三维场景编辑与AI创作工作流；本功能采用独立本地渲染与场景格式交换，未内嵌其完整编辑器。上游固定提交的对象加载器/序列化器已用于测试；桌面应用、相机恢复及现行版本的菜单导入未验证。上游测试源码和许可见 `tests/fixtures/artcraft/`。
+[ArtCraft](https://github.com/storytold/artcraft) 提供场景编辑与AI创作工作流；这里使用独立本地渲染和场景格式交换，未内嵌完整编辑器。兼容测试使用 `tests/fixtures/artcraft/` 中固定版本的对象加载器和序列化器；桌面应用、相机恢复及现行菜单导入未验证。
 
-验证命令（仓库根目录）：`node tests/blocking.mjs`。开发兼容测试需先 `npm ci --prefix rui-skills/scripts/blocking --ignore-scripts --no-audit --no-fund` 安装开发依赖，再运行 `node tests/blocking-artcraft.mjs`。测试不调用生图或视频模型，也不等同于实际生成质量验收。
+## 验证与局限
 
-## v2.0.1 提示词输出
+安装引擎后，在仓库根目录用Node.js 24.15.0运行：
 
-默认参考图齐全、精简提示词，内部保留完整校验；按剧情把生理变色式情绪描述转成动作、视线和表情，原台词逐字保留。合并重复摄影参数和有明确适用镜头的备注，并检查声音与镜头要求的冲突。
+```text
+node tests/offline.mjs
+node tests/production-timing.mjs
+node tests/comic-quality.mjs
+node tests/blocking.mjs
+```
 
-`export-text` 默认按镜头顺序；`--detail full` 导出完整摄影稿，`--timing seconds` 显示时间。仍保留可变时长、Word交付、原台词语言和已有摄影/自然眨眼规则。详见[提示词输出规则](rui-skills/references/prompt-output.md)。
+ArtCraft开发兼容测试先安装依赖：
 
-## 开放镜头设计、对话轴线与跨组安排
+```text
+npm ci --prefix rui-skills/scripts/blocking --ignore-scripts --no-audit --no-fund
+node tests/blocking-artcraft.mjs
+```
 
-镜头选择按剧情保持开放，覆盖景别与细分取景、正侧背方向、机位高度与俯仰角度、单人／双人／多人关系、过肩与正反打、主观视角、固定与各类运动、焦点转移、构图及叙事用途。按本镜信息选择必要组合，不限于侧面或对话镜头，不设类型配额，也不为补齐类型增加动作、切镜或时长。内部继续使用现有字段和允许值，更细的取景与组合运动写入镜头正文。
+测试使用合成材料，不调用配音、生图或视频模型。`comic-quality.mjs` 保留底层2.0.1引擎的二维默认兼容用例，它们不是2.5.0成稿示例。已知局限：显式统一提示词可覆盖模式；自定义3D仍可能残留二维通用词；缺少映射时编号不会自动变成人名；最终七字段、机位与光影需助手审阅。可用 `node tests/comic-quality.mjs --out 新目录` 留存合成输入和中间导出；人工案例见[排镜设计案例](tests/storyboard-design-cases.md)。
 
-景别、方向与机位角度分别设计，在已知空间与人物朝向允许时选择合适拍法，并将必要方向、运动与焦点保留到最终提示词。台词镜头中讲话者面向被讲话者，摄像机从被讲话者这一端拍向讲话者，可在对话轴线同侧偏移；正反打保持视线和方位连续，不随意越轴，不为构图新增转身、走位或听者反应。
+技能结构、运行回归、实际配音、图片及视频验收分别说明；程序通过不代表成片质量通过。实际生图由当前可用图像工具完成，引擎不自带模型或免费生图额度。
 
-同一次连续剧情分镜任务总时长超过30秒时，首组优先使用全景、中景，后续组禁用这两档景别，侧面或过肩也不能绕过限制。推拉、变焦等运动的起点、终点和途中也须满足本组景别限制；其他适用的方向、角度、运动和焦点仍可按剧情选择。每组仍按对白和动作自然安排、不超过30秒，不要求凑满；续写、换场、单独导出或工具拆批不重置首组资格。若必要信息无法在限制内完整呈现，先询问，不擅自删减或恢复禁用景别。
+## 可选反馈与许可
 
-以上要求由助手在排镜和交付时落实，精简稿与完整稿均保留；字段结构校验不能替代机位与景别审阅。详见[叙事镜头设计](rui-skills/references/narrative-camera-design.md)。
+指标、生成反馈和自动规则更新分别默认关闭，由用户明确同意后开启。规则维护不授权上传剧本、素材、聊天、路径、姓名、日志或凭证。详见[反馈与更新](rui-skills/references/learning-loop.md)、[隐私与本地运行](rui-skills/references/local-verification.md)。真实生成通常最多尝试3次，用户另有次数或预算时优先；按实际结果定向修改，不空跑或伪造验收。云端只在获准范围内接收固定指标并分发签名预设，不承担制作或授权，不接模型、不训练模型。
 
-## 从反复生成中改进
-
-重点是解决真实生成痛点：身份漂移、肤质、裁切、侧背角度、分镜连续性与时长。每次真实生成后记录实际观察的结果和尝试次数，定向调整并重试；成功与失败都计入。默认每项任务最多3次生成尝试，更多次数须用户给出明确预算，不能空跑或伪造验收。
-
-指标、生成反馈、自动更新分别默认关闭，由使用者明确同意后开启。反馈只发送固定类别、结果、尝试档位和是否使用增强预设，不上传图片、剧情、聊天、路径、姓名或自由文本。临时随机任务编号仅用于短期去重，不写入长期聚合。
-
-云端对近期多次结果进行统计，为反复失败的类别启用经过结构与行为验证的增强预设；有足够后续结果时比较失败率，恶化则撤回。签名更新自动分发，本地验证后生效；可回滚并暂停自动更新。统计不保证因果或视觉效果，不把高频请求当作质量证明。
-
-**不接模型，不训练模型，不生成任意新规则或代码。进化范围是已有预设的选择、试用、效果比较和回退。**
-
-## 开源与闭源边界
-
-本仓库的客户端与文档采用 Apache-2.0。Release 中的本地引擎为闭源字节码分发；原始制作核心、私有工作流实现、构建源码、服务端架构及签名私钥不在仓库中。上游组件及加载器的许可与署名随引擎保留，见引擎内许可文件。
-
-本地二进制/字节码不保证无法逆向；引擎许可不限制上游已有开源权利。请勿在公开 Issue 中提交私密内容。
-
-
+客户端与文档采用Apache-2.0，保留LICENSE和NOTICE。Release引擎为闭源字节码，制作核心源码、构建源码、服务端实现和签名私钥不在仓库中。上游组件及加载器的许可随引擎保留。本地字节码不保证无法逆向；引擎许可不限制上游已有开源权利。不要在公开Issue提交私密内容。

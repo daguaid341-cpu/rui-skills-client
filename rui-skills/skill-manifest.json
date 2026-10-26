@@ -1,0 +1,16 @@
+{
+  "displayName": "Rui-SHOOTING SCRIPT-Skiils",
+  "skillId": "rui-skills",
+  "version": "2.5.0",
+  "repository": "https://github.com/daguaid341-cpu/rui-skills-client",
+  "defaultBranch": "main",
+  "visibility": "public",
+  "engineVersion": "2.0.1",
+  "nodeVersion": "24.15.0",
+  "platform": "win32-x64",
+  "updatedDate": "2026-10-26",
+  "derivedFrom": {
+    "repository": "https://github.com/daguaid341-cpu/rui-skills-client",
+    "commit": "c5c0574c0d5f4091fef6ed2b2b4a2ec3f2dac6dd"
+  }
+}

@@ -59,6 +59,33 @@ try{
     ok((await checkProject(project,{variableLength:false})).errors.some(x=>x.includes('30秒')),`${mode}: explicit fixed rejects 18 seconds`);
     await assert.rejects(()=>exportText(project,{variableLength:false}));checks++;
   }
+  // A >30-second episode may start close and use wider framing in a later group.
+  // Validation/export preserve content-led framing instead of assigning sizes by group order.
+  for(const mode of ['live-action','comic']){
+    const flexible=fixture();flexible.production.mode=mode;
+    const episode=flexible.docs.script.episodes[0];
+    const first=flexible.docs.storyboard.episodes[0].segments[0];
+    const second=structuredClone(first);second.id='E01-02';
+    const flow=episode.scenes[0].flow;
+    const offset=flow.length;
+    flow.push(...structuredClone(flow));episode.targetSeconds*=2;
+    for(const cut of first.cuts){cut.size='close';cut.frame='特写，桌旁男人面部';}
+    for(const [i,cut]of second.cuts.entries()){
+      cut.beats=cut.beats.map(n=>n+offset);
+      cut.size=i===0?'wide':i===1?'medium':'close';
+      cut.frame=i===0?'全景，男人全身与桌子':i===1?'中景，男人腰部以上':'特写，男人面部';
+    }
+    flexible.docs.storyboard.episodes[0].segments.push(second);
+    const before=JSON.stringify(flexible);
+    const report=await checkProject(flexible);
+    ok(report.errors.length===0,`${mode}: framing is not gated by group order: ${report.errors.join(';')}`);
+    const text=await exportText(flexible,{timing:'seconds'});
+    const firstText=text.split('## E01-01')[1]?.split('## E01-02')[0]||'';
+    const secondText=text.split('## E01-02')[1]||'';
+    ok(firstText.includes('特写')&&!/全景|中景/.test(firstText),`${mode}: first-group close framing is preserved`);
+    ok(secondText.includes('全景')&&secondText.includes('中景'),`${mode}: later-group wide and medium framing are preserved`);
+    ok(JSON.stringify(flexible)===before,`${mode}: group order does not rewrite framing input`);
+  }
   ok((await checkProject(fixture([4,4,4,4,4,3]))).errors.length===0,'23-second group accepted');
   ok((await checkProject(fixture([5,5,5,5,5,5]),{variableLength:false})).errors.length===0,'30-second fixed group still accepted');
   ok((await checkProject(fixture([5,5,5,5,5,6]))).errors.length>0,'31-second group still rejected');
