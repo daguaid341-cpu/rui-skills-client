@@ -25,3 +25,13 @@ The private hosted implementation is not included in this distribution.
 
 The bundled sample story `skills/storycast/examples/渡口.txt` is an original
 work written for this project and is covered by the same license.
+
+---
+
+2026-10-26 public 2.5.0 licensing notice
+The current distribution includes the Rui non-commercial terms in LICENSE,
+limited to portions the licensor is entitled to license under those terms.
+Prior grants and third-party rights are not revoked or restricted. The original
+Apache-2.0 text is preserved verbatim in LICENSE-APACHE-2.0. Existing attribution
+notices above are retained; this NOTICE does not itself alter any license.
+Privacy information is in PRIVACY.md. No runtime or consent setting is changed.

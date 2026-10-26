@@ -1,5 +1,7 @@
 # Rui-SHOOTING SCRIPT-Skiils
 
+> **禁止商用：本次许可覆盖、且作者有权另行许可的原创部分仅限非商业使用；未经有效授权用于商用，构成违约或侵权的，将依法追究法律责任。** 既有Apache-2.0授权及第三方许可不受影响，不能追溯撤销。详见[使用许可](LICENSE)与[隐私政策](PRIVACY.md)。
+
 公开技能版 **2.5.0**，本地编译引擎 **2.0.1**。提供真人剧、3D漫剧分镜、人物三视图和离线站位图工作流，保留 `$rui-skills` 调用名及 `rui-skills/` 目录。无需 Rui-Skills 设备凭证、管理员发放或版本审批；引擎首次安装后可离线制作。
 
 公开分发地址：[rui-skills-client](https://github.com/daguaid341-cpu/rui-skills-client)，默认分支 `main`。版本见 [VERSION](rui-skills/VERSION)、[技能清单](rui-skills/skill-manifest.json)，更新见 [CHANGELOG.md](CHANGELOG.md)。技能规则与引擎版本分别维护。
@@ -102,4 +104,6 @@ node tests/blocking-artcraft.mjs
 
 指标、生成反馈和自动规则更新分别默认关闭，由用户明确同意后开启。规则维护不授权上传剧本、素材、聊天、路径、姓名、日志或凭证。详见[反馈与更新](rui-skills/references/learning-loop.md)、[隐私与本地运行](rui-skills/references/local-verification.md)。真实生成通常最多尝试3次，用户另有次数或预算时优先；按实际结果定向修改，不空跑或伪造验收。云端只在获准范围内接收固定指标并分发签名预设，不承担制作或授权，不接模型、不训练模型。
 
-客户端与文档采用Apache-2.0，保留LICENSE和NOTICE。Release引擎为闭源字节码，制作核心源码、构建源码、服务端实现和签名私钥不在仓库中。上游组件及加载器的许可随引擎保留。本地字节码不保证无法逆向；引擎许可不限制上游已有开源权利。不要在公开Issue提交私密内容。
+本次分发增加[非商业许可及法律责任声明](LICENSE)和[隐私政策](PRIVACY.md)，适用范围以实际权属、既有授权及第三方许可为限。新增条款不撤回此前已依Apache-2.0授予的权利；提交 `4a347c1` 及以前的公开内容仍可依其历史许可使用。本次只有许可与隐私文档修订，没有新增功能代码，不能据此宣称旧内容已被全面禁止商用。原Apache-2.0全文原样保留在[LICENSE-APACHE-2.0](LICENSE-APACHE-2.0)，署名见NOTICE；本非商业许可不是Apache-2.0修改版，也不应称为无用途限制的开源许可。
+
+ArtCraft测试源码及依赖保留各自许可。Release引擎为闭源字节码，仍按随附ENGINE-LICENSE.txt及上游许可执行；本次不改写已发布引擎授权。核心源码、构建源码、服务端实现和签名私钥不在仓库中。本地字节码不保证无法逆向。不要在公开Issue提交私密内容。

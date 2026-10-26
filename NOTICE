@@ -35,3 +35,13 @@ Their upstream copyright and license are preserved in that directory's
 LICENSE-MIT; SOURCE.json records the selected files. No ArtCraft art assets,
 desktop executable or cloud service are bundled. The Rui blocking runtime
 is independently implemented and uses npm dependencies with their own licenses.
+
+---
+
+2026-10-26 public 2.5.0 licensing notice
+The current distribution includes the Rui non-commercial terms in LICENSE,
+limited to portions the licensor is entitled to license under those terms.
+Prior grants and third-party rights are not revoked or restricted. The original
+Apache-2.0 text is preserved verbatim in LICENSE-APACHE-2.0. Existing attribution
+notices above are retained; this NOTICE does not itself alter any license.
+Privacy information is in PRIVACY.md. No runtime or consent setting is changed.
